@@ -12,7 +12,7 @@ export default function HomeScreen() {
     <ThemedView style={styles.container}>
       <View style={styles.titleContainer}>
         <ThemedText style={styles.title}>
-          Welcome {user ? user.user_metadata.first_name : 'Guest'}
+          Bienvenue {user ? user.user_metadata.first_name : 'Invité'}
         </ThemedText>
         <Text>🎉</Text>
       </View>

@@ -42,26 +42,26 @@ export default function TabTwoScreen() {
   return (
     <ThemedView style={styles.container}>
       <View style={styles.titleContainer}>
-        <ThemedText style={styles.title}>Welcome to Settings</ThemedText>
+        <ThemedText style={styles.title}>Bienvenue dans les paramètres</ThemedText>
         <Text>🎉</Text>
       </View>
       <TextInput
         style={styles.input}
-        placeholder="First Name"
+        placeholder="Prénom"
         value={firstName}
         onChangeText={setFirstName}
       />
       <TextInput
         style={styles.input}
-        placeholder="Last Name"
+        placeholder="Nom"
         value={lastName}
         onChangeText={setLastName}
       />
       <View style={styles.btn}>
-        <Button title="Save" onPress={handleSave} />
+        <Button title="Enregistrer" onPress={handleSave} />
       </View>
       <View style={styles.btn}>
-        <Button title="Logout" onPress={handleLogout} />
+        <Button title="Déconnexion" onPress={handleLogout} />
       </View>
     </ThemedView>
   );
