@@ -13,8 +13,7 @@ const LoginScreen = () => {
   const handleLogin = () => {
     // Set authentication state to true with user information
     signIn(email, password)
-      .then((user) => {
-        console.log("User signed in", user?.id);
+      .then(() => {
         router.replace("/(tabs)");
       })
       .catch((error) => {
@@ -24,7 +23,7 @@ const LoginScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Connexion</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -35,16 +34,16 @@ const LoginScreen = () => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Password"
+        placeholder="Mot de passe"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
       {errorText ? <Text style={styles.errorText}>{errorText}</Text> : null}
     <Text style={styles.registerText} onPress={() => router.push("/register")}>
-        Don't have an account? Register
+        Pas de compte ? S'enregistrer
     </Text>
-      <Button title="Login" onPress={handleLogin} />
+      <Button title="Connexion" onPress={handleLogin} />
     </View>
   );
 };

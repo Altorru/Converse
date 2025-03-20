@@ -26,7 +26,7 @@ const RegisterScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
+      <Text style={styles.title}>S'enregistrer</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -60,9 +60,9 @@ const RegisterScreen = () => {
       />
       {errorText ? <Text style={styles.errorText}>{errorText}</Text> : null}
     <Text style={styles.loginText} onPress={() => router.push("/login")}>
-        Already have an account ? Login
+        Déja un compte ? Connexion
     </Text>
-      <Button title="Register" onPress={handleRegister} />
+      <Button title="S'enregitrer" onPress={handleRegister} />
     </View>
   );
 };
