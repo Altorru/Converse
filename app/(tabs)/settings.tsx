@@ -11,7 +11,6 @@ export default function TabTwoScreen() {
   const router = useRouter();
   const [firstName, setFirstName] = useState(user?.user_metadata?.first_name || "");
   const [lastName, setLastName] = useState(user?.user_metadata?.last_name || "");
-  const [errorText, setErrorText] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -32,11 +31,10 @@ export default function TabTwoScreen() {
     });
 
     if (error) {
-      setErrorText(error.message);
+      alert('Erreur '+error);
     } else {
-      setErrorText("Profile updated successfully!");
       refreshUser()
-        .then(() => {})
+        .then(() => {alert('Succès: Utilisateur modifié avec succès');})
         .catch((error) => console.error("Error refreshing user:", error));
     }
   };
@@ -59,7 +57,6 @@ export default function TabTwoScreen() {
         value={lastName}
         onChangeText={setLastName}
       />
-      {errorText ? <Text style={styles.errorText}>{errorText}</Text> : null}
       <View style={styles.btn}>
         <Button title="Save" onPress={handleSave} />
       </View>
