@@ -9,19 +9,37 @@ const RegisterScreen = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [errorText, setErrorText] = useState("");
-  const { register } = useAuth();
+  const { register, refreshUser } = useAuth();
   const router = useRouter();
 
   const handleRegister = () => {
-    // Set authentication state to true with user information
-    register(email, password, firstName, lastName)
-      .then((user) => {
-        console.log("User signed in", user?.id);
-        router.replace("/(tabs)");
-      })
-      .catch((error) => {
-        setErrorText(error.message);
-      });
+    // Before calling the register function, check the form is valid
+    if (!email || !password || !firstName || !lastName) {
+      setErrorText("Veuillez remplir tous les champs");
+    } else {
+      // Check if the email is valid
+      if (!email.includes("@") || !email.includes(".")) {
+        setErrorText("Veuillez renseigner un email valide");
+      } else {
+        register(email, password, firstName, lastName)
+          .then((user) => {
+            console.log("User signed in", user?.id);
+            refreshUser();
+            router.replace("/(tabs)");
+          })
+          .catch((error) => {
+            if (error.code === "validation_failed") {
+              setErrorText("Veuillez vérifier les champs");
+            } else if (error.code === "anonymous_provider_disabled") {
+              setErrorText("Veuillez renseigner un email");
+            } else if (error.code === "user_already_exists") {
+              setErrorText("Un compte existe déjà avec cet email");
+            } else {
+              setErrorText(error.code);
+            }
+          });
+      }
+    }
   };
 
   return (
@@ -59,9 +77,9 @@ const RegisterScreen = () => {
         secureTextEntry
       />
       {errorText ? <Text style={styles.errorText}>{errorText}</Text> : null}
-    <Text style={styles.loginText} onPress={() => router.push("/login")}>
+      <Text style={styles.loginText} onPress={() => router.push("/login")}>
         Déja un compte ? Connexion
-    </Text>
+      </Text>
       <Button title="S'enregitrer" onPress={handleRegister} />
     </View>
   );
@@ -90,11 +108,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textAlign: "center",
   },
-    loginText: {
-        color: "blue",
-        marginBottom: 12,
-        textAlign: "center",
-    },
+  loginText: {
+    color: "blue",
+    marginBottom: 12,
+    textAlign: "center",
+  },
 });
 
 export default RegisterScreen;

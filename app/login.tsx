@@ -17,7 +17,13 @@ const LoginScreen = () => {
         router.replace("/(tabs)");
       })
       .catch((error) => {
-        setErrorText(error.message);
+        if (error.message === "missing email or phone") {
+          setErrorText("Email manquant");
+        } else if (error.message === "Invalid login credentials") {
+          setErrorText("Identifiants incorrects");
+        } else {
+          setErrorText(error.message);
+        }
       });
   };
 
