@@ -7,6 +7,7 @@ import { useRouter } from "expo-router";
 import { supabase } from "@/composables/supabaseClient";
 import { useThemeStyles } from "@/composables/useTheme";
 import UIButton from "@/components/ui/Button";
+import UILoading from "@/components/ui/Loading";
 
 export default function TabTwoScreen() {
   const { user, signOut, refreshUser } = useAuth();
@@ -14,6 +15,7 @@ export default function TabTwoScreen() {
   const styles = useThemeStyles();
   const [firstName, setFirstName] = useState(user?.user_metadata?.first_name || "");
   const [lastName, setLastName] = useState(user?.user_metadata?.last_name || "");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -29,6 +31,7 @@ export default function TabTwoScreen() {
   };
 
   const handleSave = async () => {
+    setIsLoading(true);
     const { error } = await supabase.auth.updateUser({
       data: { first_name: firstName, last_name: lastName },
     });
@@ -40,10 +43,12 @@ export default function TabTwoScreen() {
         .then(() => {alert('Succès: Utilisateur modifié avec succès');})
         .catch((error) => console.error("Error refreshing user:", error));
     }
+    setIsLoading(false);
   };
 
   return (
     <ThemedView style={styles.container}>
+      <UILoading visible={isLoading}/>
       <View style={styles.titleContainer}>
         <ThemedText style={styles.title}>Bienvenue dans les paramètres</ThemedText>
         <Text>🎉</Text>

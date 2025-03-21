@@ -11,6 +11,7 @@ import { useAuth } from "../composables/Auth";
 import { useRouter } from "expo-router";
 import { useThemeStyles } from "@/composables/useTheme";
 import UIButton from "@/components/ui/Button";
+import UILoading from "@/components/ui/Loading";
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState("");
@@ -21,6 +22,7 @@ const RegisterScreen = () => {
   const { register, refreshUser } = useAuth();
   const router = useRouter();
   const styles = useThemeStyles();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleRegister = () => {
     // Before calling the register function, check the form is valid
@@ -31,10 +33,12 @@ const RegisterScreen = () => {
       if (!email.includes("@") || !email.includes(".")) {
         setErrorText("Veuillez renseigner un email valide");
       } else {
+        setIsLoading(true);
         register(email, password, firstName, lastName)
           .then((user) => {
             console.log("User signed in", user?.id);
             refreshUser();
+            setIsLoading(false);
             router.replace("/(tabs)");
           })
           .catch((error) => {
@@ -47,6 +51,7 @@ const RegisterScreen = () => {
             } else {
               setErrorText(error.code);
             }
+            setIsLoading(false);
           });
       }
     }
@@ -54,6 +59,7 @@ const RegisterScreen = () => {
 
   return (
     <View style={styles.container}>
+      <UILoading visible={isLoading}/>
       <Text style={styles.title}>S'enregistrer</Text>
       <TextInput
         style={styles.TextInput}
