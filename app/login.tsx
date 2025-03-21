@@ -48,19 +48,19 @@ export default function LoginScreen() {
       />
       <TextInput
         style={lightTheme ? stylesGlobal.TextInput : stylesDark.TextInput}
-        placeholder="Password"
+        placeholder="Mot de passe"
         value={password}
         onChangeText={setPassword}
         placeholderTextColor={lightTheme ? "gray" : "lightgray"}
         secureTextEntry
       />
-      <Button title="Login" onPress={handleLogin} />
       <Text
         style={lightTheme ? stylesLight.registerText : stylesDark.registerText}
         onPress={() => router.push("/register")}
       >
-        Don't have an account? Register
+        Pas de compte? S'enregistrer
       </Text>
+      <Button title="Login" onPress={handleLogin} />
     </View>
   );
 }
