@@ -1,12 +1,12 @@
-import { Image, StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useAuth } from "@/composables/Auth";
-import { useEffect } from "react";
-import { User } from "@supabase/supabase-js";
+import { useThemeStyles } from "@/composables/useTheme";
 
 export default function HomeScreen() {
   const { user } = useAuth();
+  const styles = useThemeStyles();
 
   return (
     <ThemedView style={styles.container}>
@@ -19,22 +19,3 @@ export default function HomeScreen() {
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    padding: 5,
-    marginTop: 30,
-  },
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-});

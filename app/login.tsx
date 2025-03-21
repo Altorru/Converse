@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, Button } from "react-native";
 import { useAuth } from "@/composables/Auth";
 import { useRouter } from "expo-router";
-import { useColorScheme } from "@/hooks/useColorScheme";
+import { useThemeStyles } from "@/composables/useTheme";
 
 export default function LoginScreen() {
+  const styles = useThemeStyles();
   const { signIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
-  const lightTheme = useColorScheme() === "light";
 
   const handleLogin = async () => {
     try {
@@ -28,109 +28,39 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={lightTheme ? stylesLight.container : stylesDark.container}>
-      <Text style={lightTheme ? stylesLight.title : stylesDark.title}>
+    <View style={styles.container}>
+      <Text style={styles.title}>
         Connexion
       </Text>
       {error ? (
-        <Text style={lightTheme ? stylesLight.errorText : stylesDark.errorText}>
+        <Text style={styles.errorText}>
           {error}
         </Text>
       ) : null}
       <TextInput
-        style={lightTheme ? stylesGlobal.TextInput : stylesDark.TextInput}
+        style={styles.TextInput}
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
-        placeholderTextColor={lightTheme ? "gray" : "lightgray"}
+        placeholderTextColor={"lightgray"}
       />
       <TextInput
-        style={lightTheme ? stylesGlobal.TextInput : stylesDark.TextInput}
+        style={styles.TextInput}
         placeholder="Mot de passe"
         value={password}
         onChangeText={setPassword}
-        placeholderTextColor={lightTheme ? "gray" : "lightgray"}
+        placeholderTextColor={"lightgray"}
         secureTextEntry
       />
       <Text
-        style={lightTheme ? stylesLight.registerText : stylesDark.registerText}
+        style={styles.registerText}
         onPress={() => router.push("/register")}
       >
         Pas de compte? S'enregistrer
       </Text>
-      <Button title="Login" onPress={handleLogin} />
+      <Button title="Connexion" onPress={handleLogin} />
     </View>
   );
 }
-
-const stylesGlobal = StyleSheet.create({
-  TextInput: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 8,
-    color: "black",
-  },
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 16,
-  },
-  errorText: {
-    marginBottom: 12,
-    textAlign: "center",
-  },
-  registerText: {
-    marginBottom: 12,
-    textAlign: "center",
-  },
-});
-
-const stylesLight = StyleSheet.create({
-  container: {
-    ...stylesGlobal.container,
-    backgroundColor: "white",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-    color: "black",
-  },
-  errorText: {
-    ...stylesGlobal.errorText,
-    color: "red",
-  },
-  registerText: {
-    ...stylesGlobal.registerText,
-    color: "blue",
-  },
-});
-
-const stylesDark = StyleSheet.create({
-  container: {
-    ...stylesGlobal.container,
-    backgroundColor: "black",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-    color: "white",
-  },
-  errorText: {
-    ...stylesGlobal.errorText,
-    color: "red",
-  },
-  registerText: {
-    ...stylesGlobal.registerText,
-    color: "lightblue",
-  },
-  TextInput: {
-    ...stylesGlobal.TextInput,
-    color: "white",
-  },
-});

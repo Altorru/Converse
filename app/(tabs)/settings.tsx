@@ -5,10 +5,12 @@ import { ThemedView } from "@/components/ThemedView";
 import { useAuth } from "@/composables/Auth";
 import { useRouter } from "expo-router";
 import { supabase } from "@/composables/supabaseClient";
+import { useThemeStyles } from "@/composables/useTheme";
 
 export default function TabTwoScreen() {
   const { user, signOut, refreshUser } = useAuth();
   const router = useRouter();
+  const styles = useThemeStyles();
   const [firstName, setFirstName] = useState(user?.user_metadata?.first_name || "");
   const [lastName, setLastName] = useState(user?.user_metadata?.last_name || "");
 
@@ -46,56 +48,28 @@ export default function TabTwoScreen() {
         <Text>🎉</Text>
       </View>
       <TextInput
-        style={styles.input}
+        style={styles.TextInput}
         placeholder="Prénom"
         value={firstName}
         onChangeText={setFirstName}
       />
       <TextInput
-        style={styles.input}
+        style={styles.TextInput}
         placeholder="Nom"
         value={lastName}
         onChangeText={setLastName}
       />
-      <View style={styles.btn}>
+      <View style={stylesLocal.btn}>
         <Button title="Enregistrer" onPress={handleSave} />
       </View>
-      <View style={styles.btn}>
+      <View style={stylesLocal.btn}>
         <Button title="Déconnexion" onPress={handleLogout} />
       </View>
     </ThemedView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    padding: 5,
-    marginTop: 30,
-  },
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 8,
-  },
-  errorText: {
-    color: "red",
-    marginBottom: 12,
-    textAlign: "center",
-  },
+const stylesLocal = StyleSheet.create({
   btn: {
     marginBottom: 12,
   },
