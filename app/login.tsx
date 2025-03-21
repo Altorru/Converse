@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button } from "react-native";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { useAuth } from "@/composables/Auth";
 import { useRouter } from "expo-router";
 import { useThemeStyles } from "@/composables/useTheme";
+import UIButton from "@/components/ui/Button";
 
 export default function LoginScreen() {
   const styles = useThemeStyles();
@@ -60,7 +61,7 @@ export default function LoginScreen() {
       >
         Pas de compte? S'enregistrer
       </Text>
-      <Button title="Connexion" onPress={handleLogin} />
+      <UIButton textContent="Connexion" onPress={handleLogin} />
     </View>
   );
 }

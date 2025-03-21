@@ -6,6 +6,7 @@ import { useAuth } from "@/composables/Auth";
 import { useRouter } from "expo-router";
 import { supabase } from "@/composables/supabaseClient";
 import { useThemeStyles } from "@/composables/useTheme";
+import UIButton from "@/components/ui/Button";
 
 export default function TabTwoScreen() {
   const { user, signOut, refreshUser } = useAuth();
@@ -59,12 +60,8 @@ export default function TabTwoScreen() {
         value={lastName}
         onChangeText={setLastName}
       />
-      <View style={stylesLocal.btn}>
-        <Button title="Enregistrer" onPress={handleSave} />
-      </View>
-      <View style={stylesLocal.btn}>
-        <Button title="Déconnexion" onPress={handleLogout} />
-      </View>
+      <UIButton textContent="Enregistrer" onPress={handleSave} />
+      <UIButton textContent="Déconnexion" onPress={handleLogout} />
     </ThemedView>
   );
 }

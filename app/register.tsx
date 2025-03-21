@@ -1,9 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { useAuth } from "../composables/Auth";
 import { useRouter } from "expo-router";
 import { useThemeStyles } from "@/composables/useTheme";
-
+import UIButton from "@/components/ui/Button";
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState("");
@@ -87,7 +94,7 @@ const RegisterScreen = () => {
       <Text style={styles.registerText} onPress={() => router.push("/login")}>
         Déja un compte ? Connexion
       </Text>
-      <Button title="S'enregitrer" onPress={handleRegister} />
+      <UIButton textContent="S'enregistrer" onPress={handleRegister} />
     </View>
   );
 };

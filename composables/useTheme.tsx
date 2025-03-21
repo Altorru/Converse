@@ -31,6 +31,10 @@ const stylesGlobal = StyleSheet.create({
     marginBottom: 12,
     textAlign: "center",
   },
+  Button: {
+    borderRadius: 8,
+    marginBottom: 12,
+  },
 });
 
 const stylesLight = StyleSheet.create({
@@ -57,6 +61,16 @@ const stylesLight = StyleSheet.create({
     ...stylesGlobal.TextInput,
     color: "black",
   },
+  Button: {
+    ...stylesGlobal.Button,
+    padding: 10,
+    alignItems: "center",
+    backgroundColor: "lightblue",
+  },
+  ButtonText: {
+    color: "white",
+    fontSize: 16,
+  },
 });
 
 const stylesDark = StyleSheet.create({
@@ -82,6 +96,16 @@ const stylesDark = StyleSheet.create({
   TextInput: {
     ...stylesGlobal.TextInput,
     color: "white",
+  },
+  Button: {
+    ...stylesGlobal.Button,
+    padding: 10,
+    alignItems: "center",
+    backgroundColor: "blue",
+  },
+  ButtonText: {
+    color: "white",
+    fontSize: 16,
   },
 });
 
