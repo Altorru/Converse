@@ -51,8 +51,7 @@ export default function TabTwoScreen() {
     <ThemedView style={styles.container}>
       <UILoading visible={isLoading}/>
       <View style={styles.titleContainer}>
-        <ThemedText style={styles.title}>Bienvenue dans les paramètres</ThemedText>
-        <Text>🎉</Text>
+        <ThemedText style={styles.title}>Paramètres</ThemedText>
       </View>
       <UITextInput
         placeholder="Prénom"

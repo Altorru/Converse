@@ -52,14 +52,13 @@ export const useThemeStyles = () => {
   const stylesGlobal = StyleSheet.create({
     container: {
       flex: 1,
-      padding: 5,
-      marginTop: 30,
+      padding: 20,
+      marginTop: 25,
     },
     titleContainer: {
       flexDirection: "row",
       alignItems: "center",
-      gap: 8,
-      padding: 16,
+      marginBottom: 12,
     },
     title: {
       fontSize: 24,
