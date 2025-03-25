@@ -37,7 +37,7 @@ const RegisterScreen = () => {
         setIsLoading(true);
         register(email, password, firstName, lastName)
           .then((user) => {
-            console.log("User signed in", user?.id);
+            //console.log("User signed in", user?.id);
             refreshUser();
             setIsLoading(false);
             router.replace("/(tabs)");
