@@ -68,10 +68,4 @@ export default function TabTwoScreen() {
       <UIButton textContent="Déconnexion" onPress={handleLogout} />
     </ThemedView>
   );
-}
-
-const stylesLocal = StyleSheet.create({
-  btn: {
-    marginBottom: 12,
-  },
-});
+};
