@@ -83,6 +83,26 @@ export const useThemeStyles = () => {
       borderRadius: 8,
       marginBottom: 12,
     },
+    avatarContainer: {
+      alignSelf: "center", // Center the avatar horizontally
+      marginBottom: 20, // Add spacing below the avatar
+      width: 100, // Set the width of the avatar container
+      height: 100, // Set the height of the avatar container
+      borderRadius: 50, // Make the container circular
+      overflow: "hidden", // Ensure the image stays within the circular container
+      justifyContent: "center", // Center content vertically
+      alignItems: "center", // Center content horizontally
+      backgroundColor: "#ccc", // Set a default background color
+    },
+    avatar: {
+      width: "100%", // Make the image fill the container's width
+      height: "100%", // Make the image fill the container's height
+    },
+    avatarPlaceholder: {
+      textAlign: "center", // Center the placeholder text
+      color: "#fff", // Set the text color
+      fontSize: 16, // Set the font size for the placeholder text
+    },
   });
 
   const stylesLight = StyleSheet.create({
@@ -119,6 +139,15 @@ export const useThemeStyles = () => {
       color: themeColors.onPrimary,
       fontSize: 16,
     },
+    avatarContainer: {
+      ...stylesGlobal.avatarContainer,
+    },
+    avatarPlaceholder: {
+      ...stylesGlobal.avatarPlaceholder,
+    },
+    avatar : {
+      ...stylesGlobal.avatar,
+    },
   });
 
   const stylesDark = StyleSheet.create({
@@ -154,6 +183,15 @@ export const useThemeStyles = () => {
     ButtonText: {
       color: themeColors.onPrimary,
       fontSize: 16,
+    },
+    avatarContainer: {
+      ...stylesGlobal.avatarContainer,
+    },
+    avatarPlaceholder: {
+      ...stylesGlobal.avatarPlaceholder,
+    },
+    avatar : {
+      ...stylesGlobal.avatar,
     },
   });
 
