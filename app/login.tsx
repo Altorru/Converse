@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import { useThemeStyles } from "@/composables/useTheme";
 import UIButton from "@/components/ui/Button";
 import UILoading from "@/components/ui/Loading";
+import UITextInput from "@/components/ui/TextInput";
 
 export default function LoginScreen() {
   const styles = useThemeStyles();
@@ -44,21 +45,17 @@ export default function LoginScreen() {
         {error}
       </Text>
       ) : null}
-      <TextInput
-      style={styles.TextInput}
+      <UITextInput
       placeholder="Email"
       value={email}
-      onChangeText={setEmail}
       keyboardType="email-address"
       autoCapitalize="none"
-      placeholderTextColor={"lightgray"}
+      onChangeText={setEmail}
       />
-      <TextInput
-      style={styles.TextInput}
+      <UITextInput
       placeholder="Mot de passe"
       value={password}
       onChangeText={setPassword}
-      placeholderTextColor={"lightgray"}
       secureTextEntry
       />
       <Text

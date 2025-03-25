@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 import { useThemeStyles } from '@/composables/useTheme';
 
 interface UIButtonProps {

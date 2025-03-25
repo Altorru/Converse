@@ -8,6 +8,7 @@ import { supabase } from "@/composables/supabaseClient";
 import { useThemeStyles } from "@/composables/useTheme";
 import UIButton from "@/components/ui/Button";
 import UILoading from "@/components/ui/Loading";
+import UITextInput from "@/components/ui/TextInput";
 
 export default function TabTwoScreen() {
   const { user, signOut, refreshUser } = useAuth();
@@ -53,14 +54,12 @@ export default function TabTwoScreen() {
         <ThemedText style={styles.title}>Bienvenue dans les paramètres</ThemedText>
         <Text>🎉</Text>
       </View>
-      <TextInput
-        style={styles.TextInput}
+      <UITextInput
         placeholder="Prénom"
         value={firstName}
         onChangeText={setFirstName}
       />
-      <TextInput
-        style={styles.TextInput}
+      <UITextInput
         placeholder="Nom"
         value={lastName}
         onChangeText={setLastName}

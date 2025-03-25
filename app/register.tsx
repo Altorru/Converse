@@ -12,6 +12,7 @@ import { useRouter } from "expo-router";
 import { useThemeStyles } from "@/composables/useTheme";
 import UIButton from "@/components/ui/Button";
 import UILoading from "@/components/ui/Loading";
+import UITextInput from "@/components/ui/TextInput";
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState("");
@@ -59,42 +60,34 @@ const RegisterScreen = () => {
 
   return (
     <View style={styles.container}>
-      <UILoading visible={isLoading}/>
+      <UILoading visible={isLoading} />
       <Text style={styles.title}>S'enregistrer</Text>
-      <TextInput
-        style={styles.TextInput}
+      <UITextInput
         placeholder="Email"
         value={email}
-        onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
-        placeholderTextColor={"lightgray"}
+        onChangeText={setEmail}
       />
-      <TextInput
-        style={styles.TextInput}
+      <UITextInput
         placeholder="Prénom"
         value={firstName}
         onChangeText={setFirstName}
         keyboardType="default"
         autoCapitalize="words"
-        placeholderTextColor={"lightgray"}
       />
-      <TextInput
-        style={styles.TextInput}
+      <UITextInput
         placeholder="Nom"
         value={lastName}
         onChangeText={setLastName}
         keyboardType="default"
         autoCapitalize="words"
-        placeholderTextColor={"lightgray"}
       />
-      <TextInput
-        style={styles.TextInput}
+      <UITextInput
         placeholder="Mot de passe"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        placeholderTextColor={"lightgray"}
       />
       {errorText ? <Text style={styles.errorText}>{errorText}</Text> : null}
       <Text style={styles.registerText} onPress={() => router.push("/login")}>
