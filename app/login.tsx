@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text } from "react-native";
 import { useAuth } from "@/composables/Auth";
 import { useRouter } from "expo-router";
 import { useThemeStyles } from "@/composables/useTheme";
