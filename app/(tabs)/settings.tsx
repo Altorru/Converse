@@ -22,9 +22,11 @@ export default function TabTwoScreen() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    
     const fetchAvatarUrl = async () => {
+      setIsLoading(true);
       setAvatarUrl(await getCurrentProfileAvatar());
-      //console.log("Avatar URL:", avatarUrl);
+      setIsLoading(false);
     };
 
     if (user) {
