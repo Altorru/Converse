@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { supabase } from './supabaseClient';
 import { ReactNode } from 'react';
-import { User } from '@supabase/supabase-js';
+import { User, Session } from '@supabase/supabase-js';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Use AsyncStorage for larger session storage
 
 const SignInContext = React.createContext<{
   isSignedIn: boolean;
@@ -23,14 +24,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isSignedIn, setIsSignedIn] = React.useState(false);
   const [user, setUser] = React.useState<User | null>(null);
 
+  // Load session from AsyncStorage on app start
+  React.useEffect(() => {
+    const loadSession = async () => {
+      const sessionString = await AsyncStorage.getItem('supabase_session');
+      if (sessionString) {
+        const session: Session = JSON.parse(sessionString);
+        supabase.auth.setSession(session); // Restore the session
+        setUser(session.user);
+        setIsSignedIn(true);
+      }
+    };
+    loadSession();
+  }, []);
+
   const signIn = async (email: string, password: string): Promise<User | null> => {
-    const { data: { user }, error } = await supabase.auth.signInWithPassword({
+    const { data: { session, user }, error } = await supabase.auth.signInWithPassword({
       email, password
     });
 
     if (error) {
-      //console.error('Error signing in:', error);
       return Promise.reject(error);
+    }
+
+    // Save session to AsyncStorage
+    if (session) {
+      await AsyncStorage.setItem('supabase_session', JSON.stringify(session));
     }
 
     setIsSignedIn(true);
@@ -43,6 +62,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (error) {
       return Promise.reject(error);
     }
+
+    // Remove session from AsyncStorage
+    await AsyncStorage.removeItem('supabase_session');
+
     setIsSignedIn(false);
     setUser(null);
     return Promise.resolve();
@@ -53,8 +76,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (error) {
       return Promise.reject(error);
     }
+
+    // Save updated session to AsyncStorage
+    if (data.session) {
+      await AsyncStorage.setItem('supabase_session', JSON.stringify(data.session));
+    }
+
     setUser(data.user);
-    return Promise.resolve(user);
+    return Promise.resolve(data.user);
   };
 
   const register = async (email: string, password: string, firstName: string, lastName: string): Promise<User | null> => {
@@ -72,9 +101,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (error) {
       return Promise.reject(error);
     }
+
+    // Save session to AsyncStorage
+    if (data.session) {
+      await AsyncStorage.setItem('supabase_session', JSON.stringify(data.session));
+    }
+
     setIsSignedIn(true);
-    setUser(user);
-    return Promise.resolve(data?.user);
+    setUser(data.user);
+    return Promise.resolve(data.user);
   };
 
   return (
