@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text } from "react-native";
-import { useAuth } from "../composables/Auth";
+import { useAuth, AuthProvider } from "../composables/Auth";
 import { useRouter } from "expo-router";
 import { useThemeStyles } from "@/composables/useTheme";
 import UIButton from "@/components/ui/Button";
@@ -52,6 +52,7 @@ const RegisterScreen = () => {
   };
 
   return (
+    <AuthProvider>
     <View style={styles.container}>
       <UILoading visible={isLoading} />
       <Text style={styles.title}>S'enregistrer</Text>
@@ -88,6 +89,7 @@ const RegisterScreen = () => {
       </Text>
       <UIButton textContent="S'enregistrer" onPress={handleRegister} />
     </View>
+    </AuthProvider>
   );
 };
 
