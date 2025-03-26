@@ -84,24 +84,26 @@ export const useThemeStyles = () => {
       marginBottom: 12,
     },
     avatarContainer: {
-      alignSelf: "center", // Center the avatar horizontally
-      marginBottom: 20, // Add spacing below the avatar
-      width: 100, // Set the width of the avatar container
-      height: 100, // Set the height of the avatar container
-      borderRadius: 50, // Make the container circular
-      overflow: "hidden", // Ensure the image stays within the circular container
-      justifyContent: "center", // Center content vertically
-      alignItems: "center", // Center content horizontally
-      backgroundColor: "#ccc", // Set a default background color
+      alignSelf: "center",
+      marginBottom: 20,
+      width: 75,
+      height: 75,
+      borderRadius: 50,
+      borderColor: themeColors.primaryLight,
+      borderWidth: 1,
+      overflow: "hidden",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "#ccc",
     },
     avatar: {
-      width: "100%", // Make the image fill the container's width
-      height: "100%", // Make the image fill the container's height
+      width: "100%",
+      height: "100%",
     },
     avatarPlaceholder: {
-      textAlign: "center", // Center the placeholder text
-      color: "#fff", // Set the text color
-      fontSize: 16, // Set the font size for the placeholder text
+      textAlign: "center",
+      color: "#fff",
+      fontSize: 16,
     },
   });
 

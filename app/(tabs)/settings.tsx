@@ -111,25 +111,3 @@ export default function TabTwoScreen() {
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  avatarContainer: {
-    alignSelf: "center",
-    marginBottom: 20,
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#ccc",
-  },
-  avatar: {
-    width: "100%",
-    height: "100%",
-  },
-  avatarPlaceholder: {
-    textAlign: "center",
-    color: "#fff",
-  },
-});
