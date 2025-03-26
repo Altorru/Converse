@@ -83,6 +83,28 @@ export const useThemeStyles = () => {
       borderRadius: 8,
       marginBottom: 12,
     },
+    avatarContainer: {
+      alignSelf: "center",
+      marginBottom: 20,
+      width: 75,
+      height: 75,
+      borderRadius: 50,
+      borderColor: themeColors.primaryLight,
+      borderWidth: 1,
+      overflow: "hidden",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "#ccc",
+    },
+    avatar: {
+      width: "100%",
+      height: "100%",
+    },
+    avatarPlaceholder: {
+      textAlign: "center",
+      color: "#fff",
+      fontSize: 16,
+    },
   });
 
   const stylesLight = StyleSheet.create({
@@ -119,6 +141,15 @@ export const useThemeStyles = () => {
       color: themeColors.onPrimary,
       fontSize: 16,
     },
+    avatarContainer: {
+      ...stylesGlobal.avatarContainer,
+    },
+    avatarPlaceholder: {
+      ...stylesGlobal.avatarPlaceholder,
+    },
+    avatar : {
+      ...stylesGlobal.avatar,
+    },
   });
 
   const stylesDark = StyleSheet.create({
@@ -154,6 +185,15 @@ export const useThemeStyles = () => {
     ButtonText: {
       color: themeColors.onPrimary,
       fontSize: 16,
+    },
+    avatarContainer: {
+      ...stylesGlobal.avatarContainer,
+    },
+    avatarPlaceholder: {
+      ...stylesGlobal.avatarPlaceholder,
+    },
+    avatar : {
+      ...stylesGlobal.avatar,
     },
   });
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, TextInput, Button } from "react-native";
+import { View, TouchableOpacity, Image, StyleSheet, Text } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useAuth } from "@/composables/Auth";
@@ -9,6 +9,8 @@ import { useThemeStyles } from "@/composables/useTheme";
 import UIButton from "@/components/ui/Button";
 import UILoading from "@/components/ui/Loading";
 import UITextInput from "@/components/ui/TextInput";
+import * as ImagePicker from "expo-image-picker";
+import { uploadAvatar, getAvatarUrl, getCurrentProfileAvatar } from "@/composables/Avatar";
 
 export default function TabTwoScreen() {
   const { user, signOut, refreshUser } = useAuth();
@@ -17,11 +19,20 @@ export default function TabTwoScreen() {
   const [firstName, setFirstName] = useState(user?.user_metadata?.first_name || "");
   const [lastName, setLastName] = useState(user?.user_metadata?.last_name || "");
   const [isLoading, setIsLoading] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    
+    const fetchAvatarUrl = async () => {
+      setIsLoading(true);
+      setAvatarUrl(await getCurrentProfileAvatar());
+      setIsLoading(false);
+    };
+
     if (user) {
       setFirstName(user.user_metadata.first_name);
       setLastName(user.user_metadata.last_name);
+      fetchAvatarUrl();
     }
   }, [user]);
 
@@ -38,21 +49,53 @@ export default function TabTwoScreen() {
     });
 
     if (error) {
-      alert('Erreur '+error);
+      alert("Erreur " + error);
     } else {
       refreshUser()
-        .then(() => {alert('Succès: Utilisateur modifié avec succès');})
+        .then(() => {
+          alert("Succès: Utilisateur modifié avec succès");
+        })
         .catch((error) => console.error("Error refreshing user:", error));
     }
     setIsLoading(false);
   };
 
+  const handleAvatarUpload = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setIsLoading(true);
+      const file = result.assets[0];
+      const data = await uploadAvatar(file.uri);
+      if (!data) {
+        alert("Erreur lors du téléchargement de l'avatar.");
+      } else {
+        const result = await getAvatarUrl(data.path); // Fetch the full URL of the uploaded avatar
+        const url = result?.data?.publicUrl || null;
+        setAvatarUrl(url); // Update the avatar URL
+        refreshUser();
+      }
+      setIsLoading(false);
+    }
+  };
+
   return (
     <ThemedView style={styles.container}>
-      <UILoading visible={isLoading}/>
+      <UILoading visible={isLoading} />
       <View style={styles.titleContainer}>
         <ThemedText style={styles.title}>Paramètres</ThemedText>
       </View>
+      <TouchableOpacity style={styles.avatarContainer} onPress={handleAvatarUpload}>
+        {avatarUrl ? (
+          <Image source={{ uri: avatarUrl }} style={styles.avatar} />
+        ) : (
+          <ThemedText style={styles.avatarPlaceholder}>Ajouter un avatar</ThemedText>
+        )}
+      </TouchableOpacity>
       <UITextInput
         placeholder="Prénom"
         value={firstName}
@@ -67,4 +110,4 @@ export default function TabTwoScreen() {
       <UIButton textContent="Déconnexion" onPress={handleLogout} />
     </ThemedView>
   );
-};
+}
