@@ -4,10 +4,17 @@ import * as ImageManipulator from "expo-image-manipulator";
 
 export const uploadAvatar = async (fileUri: string) => {
   try {
-    // Compress the image to 32x32
+    // Retrieve the current user's ID
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError || !userData?.user) {
+      throw new Error("User is not authenticated");
+    }
+    const userId = userData.user.id;
+
+    // Compress the image to 64x64 pixels
     const compressedImage = await ImageManipulator.manipulateAsync(
       fileUri,
-      [{ resize: { width: 32, height: 32 } }],
+      [{ resize: { width: 64, height: 64 } }],
       { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
     );
 
@@ -17,16 +24,17 @@ export const uploadAvatar = async (fileUri: string) => {
     });
 
     // Convert base64 to ArrayBuffer
-    const binaryFile = Uint8Array.from(atob(base64File), (char) => char.charCodeAt(0)).buffer;
+    const binaryFile = Uint8Array.from(atob(base64File), (char) =>
+      char.charCodeAt(0)
+    ).buffer;
 
-    // Generate a unique file name
-    const fileName = `avatar_${Date.now()}.jpg`;
-    console.log("Uploading file:", fileName);
+    // Generate the file name
+    const fileName = `avatar.jpg`;
 
     // Upload the file to Supabase storage
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from("avatars")
-      .upload(`public/${fileName}`, binaryFile, {
+      .upload(userId+"/"+fileName, binaryFile, {
         contentType: "image/jpeg",
         upsert: true,
       });
@@ -37,13 +45,6 @@ export const uploadAvatar = async (fileUri: string) => {
     }
 
     console.log("Uploaded avatar path:", uploadData.path);
-
-    // Retrieve the current user's ID
-    const { data: userData, error: userError } = await supabase.auth.getUser();
-    if (userError || !userData?.user) {
-      throw new Error("User is not authenticated");
-    }
-    const userId = userData.user.id;
 
     // Update the user's profile with the new avatar URL
     const { error: profileError } = await supabase
@@ -67,9 +68,7 @@ export const uploadAvatar = async (fileUri: string) => {
 export const getAvatarUrl = async (avatar: string) => {
   try {
     console.log("Fetched avatar path:", avatar);
-    const avatarUrl = supabase.storage
-      .from("avatars")
-      .getPublicUrl(avatar);
+    const avatarUrl = supabase.storage.from("avatars").getPublicUrl(avatar);
 
     console.log("Avatar URL:", avatarUrl);
     return avatarUrl;
@@ -77,7 +76,7 @@ export const getAvatarUrl = async (avatar: string) => {
     console.error("Error fetching avatar:", error);
     return null;
   }
-}
+};
 
 export const getCurrentProfileAvatar = async () => {
   try {
@@ -103,11 +102,14 @@ export const getCurrentProfileAvatar = async () => {
 
     const avatarUrl = supabase.storage
       .from("avatars")
-      .createSignedUrl(profileData.avatar, 60)
+      .createSignedUrl(profileData.avatar, 60);
 
     return (await avatarUrl).data?.signedUrl || null;
   } catch (error) {
-    console.error("Error fetching current profile avatar:", (error as Error).message);
+    console.error(
+      "Error fetching current profile avatar:",
+      (error as Error).message
+    );
     return null;
   }
 };
