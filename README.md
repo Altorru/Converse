@@ -1,8 +1,22 @@
-# Welcome to your Expo app 👋
+# Welcome to my Converse APP 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
 ## Get started
+
+### Supabase configuration
+
+1. Install dependencies
+
+   ![Profiles table structure](profiles_table.png)
+
+2. Start the app
+
+   ```bash
+    npx expo start
+   ```
+
+### Application
 
 1. Install dependencies
 
@@ -35,7 +49,7 @@ npm run reset-project
 
 This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-## Build APP
+## Build Android APK
 [Inspired By](https://aymeric-cucherousset.fr/expo-generer-un-fichier-apk/)
 
 Requirements :
@@ -48,15 +62,8 @@ npm install -g eas-cli
 eas secret:create 
 ```
 
-Make the build :
+Make the build with Expo cloud builder:
 - Android build
 ```bash
 eas build -p android --profile preview
 ```
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
