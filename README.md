@@ -6,15 +6,9 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 ### Supabase configuration
 
-1. Install dependencies
+1. Profiles table
 
    ![Profiles table structure](profiles_table.png)
-
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
 
 ### Application
 
