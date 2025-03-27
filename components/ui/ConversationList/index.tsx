@@ -16,6 +16,7 @@ const UIConversation: React.FC = () => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Conversation
+            id={item.id}
             label={item.label}
             lastMessage="Dernier message..." // À remplacer par un vrai dernier message
             isDM={item.participants.length === 2}
