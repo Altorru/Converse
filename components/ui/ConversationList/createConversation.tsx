@@ -3,21 +3,26 @@ import { View, Text, TextInput, Button, Alert } from "react-native";
 import { useConversations } from "@/composables/useConversation";
 import { useAuth } from "@/composables/Auth";
 import { supabase } from "@/composables/supabaseClient";
+import { useThemeStyles } from "@/composables/useTheme";
 
-const CreateConversation: React.FC = () => {
+const CreateConversation: React.FC<{ onCancel?: () => void }> = ({
+  onCancel,
+}) => {
   const { createConversation } = useConversations();
   const { user } = useAuth();
   const [label, setLabel] = useState("");
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState<{ id: string; firstname: string; lastname: string }[]>([]);
-
+  const [users, setUsers] = useState<
+    { id: string; first_name: string; last_name: string }[]
+  >([]);
+  const styles = useThemeStyles();
   // 🔄 Fetch all users except the current user
   const fetchUsers = async () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, firstname, lastname")
+      .select("id, first_name, last_name")
       .neq("id", user?.id);
 
     if (error) {
@@ -43,54 +48,70 @@ const CreateConversation: React.FC = () => {
       return;
     }
 
-    const participants = [user?.id, ...selectedUsers].filter(Boolean) as string[];
+    const participants = [user?.id, ...selectedUsers].filter(
+      Boolean
+    ) as string[];
     const isGroup = participants.length > 2;
 
     await createConversation(isGroup ? label : "DM", participants);
     Alert.alert("Success", "Conversation created!");
+    handleCancel(); // Reset fields after creation
+  };
+
+  // ❌ Cancel and reset
+  const handleCancel = () => {
     setLabel("");
     setSelectedUsers([]);
+    if (onCancel) onCancel(); // Call the parent-provided onCancel if exists
   };
 
   return (
-    <View style={{ padding: 16 }}>
-      <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>New Conversation</Text>
+    <View>
+      <Text style={[styles.title, { marginBottom: 10 }]}>
+        Nouvelle conversation
+      </Text>
 
       {/* Input for group name (Only if it's a group chat) */}
       {selectedUsers.length > 1 && (
         <TextInput
-          placeholder="Enter group name"
+          placeholder="Nom du groupe"
           value={label}
           onChangeText={setLabel}
-          style={{
-            borderWidth: 1,
-            borderColor: "#ccc",
-            padding: 8,
-            borderRadius: 5,
-            marginBottom: 10,
-          }}
+          placeholderTextColor={"lightgrey"}
+          style={styles.TextInput}
         />
       )}
 
       {/* User selection */}
-      <Button title="Load Users" onPress={fetchUsers} disabled={loading} />
+      <Button title="Charger les utilisateurs" onPress={fetchUsers} disabled={loading} />
       {users.map((u) => (
         <Text
           key={u.id}
           onPress={() => toggleUserSelection(u.id)}
           style={{
             padding: 10,
-            backgroundColor: selectedUsers.includes(u.id) ? "#4CAF50" : "#f0f0f0",
+            backgroundColor: selectedUsers.includes(u.id)
+              ? "#4CAF50"
+              : "#f0f0f0",
             marginVertical: 5,
             borderRadius: 5,
           }}
         >
-          {u.firstname} {u.lastname}
+          {u.first_name} {u.last_name}
         </Text>
       ))}
 
-      {/* Create conversation button */}
-      <Button title="Create Conversation" onPress={handleCreateConversation} />
+      {/* Buttons Row */}
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginTop: 10,
+        }}
+      >
+        <Button title="Annuler" onPress={handleCancel} color="red" />
+        <Button title="Créer" onPress={handleCreateConversation} />
+      </View>
     </View>
   );
 };
