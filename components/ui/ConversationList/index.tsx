@@ -2,16 +2,14 @@ import React from "react";
 import { View, ActivityIndicator, FlatList } from "react-native";
 import Conversation from "@/components/ui/ConversationList/Conversation";
 import { useConversations } from "@/composables/useConversation";
+import Loading from "@/components/ui/Loading";
 
 const UIConversation: React.FC = () => {
   const { conversations, loading } = useConversations();
-
-  if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
-  }
-
+  
   return (
     <View>
+      <Loading visible={loading} />
       <FlatList
         data={conversations}
         keyExtractor={(item) => item.id}

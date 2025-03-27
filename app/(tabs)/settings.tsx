@@ -89,7 +89,7 @@ export default function TabTwoScreen() {
         alert("Erreur lors du téléchargement de l'avatar.");
       } else {
         const result = await getAvatarUrl(data.path); // Fetch the full URL of the uploaded avatar
-        const url = result?.data?.publicUrl || null;
+        const url = result?.data?.signedUrl || null;
         setAvatarUrl(url); // Update the avatar URL
         refreshUser();
       }
