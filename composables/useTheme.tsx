@@ -105,6 +105,30 @@ export const useThemeStyles = () => {
       color: "#fff",
       fontSize: 16,
     },
+    avatarConversation: {
+      width: 45,
+      height: 45,
+      borderRadius: 50,
+      overflow: "hidden",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "#ccc",
+    },
+    conversationContainer: {
+      flexDirection: "row",
+      padding: 10,
+      borderWidth: 1,
+      borderRadius: 8,
+      marginBottom: 10,
+      gap: 10,
+    },
+    conversationContainerLabel: {
+      fontSize: 16,
+      fontWeight: "bold",
+    },
+    conversationContainerText: {
+      fontSize: 14,
+    },
   });
 
   const stylesLight = StyleSheet.create({
@@ -153,6 +177,21 @@ export const useThemeStyles = () => {
     statusBar: {
       backgroundColor: colors.light.background,
     },
+    avatarConversation: {
+      ...stylesGlobal.avatarConversation,
+    },
+    conversationContainer: {
+      ...stylesGlobal.conversationContainer,
+      borderColor: themeColors.primaryDark,
+    },
+    conversationContainerLabel: {
+      ...stylesGlobal.conversationContainerLabel,
+      color: colors.light.text,
+    },
+    conversationContainerText: {
+      ...stylesGlobal.conversationContainerText,
+      color: colors.light.text,
+    },
   });
 
   const stylesDark = StyleSheet.create({
@@ -200,6 +239,21 @@ export const useThemeStyles = () => {
     },
     statusBar: {
       backgroundColor: colors.dark.background,
+    },
+    avatarConversation: {
+      ...stylesGlobal.avatarConversation,
+    },
+    conversationContainer: {
+      ...stylesGlobal.conversationContainer,
+      borderColor: themeColors.primaryLight,
+    },
+    conversationContainerLabel: {
+      ...stylesGlobal.conversationContainerLabel,
+      color: colors.dark.text,
+    },
+    conversationContainerText: {
+      ...stylesGlobal.conversationContainerText,
+      color: colors.dark.text,
     },
   });
 

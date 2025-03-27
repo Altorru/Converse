@@ -10,6 +10,18 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
    ![Profiles table structure](profiles_table.png)
 
+2. Conversations table
+
+```SQL
+create table conversations (
+    id uuid primary key default gen_random_uuid(),
+    label text null,
+    participants jsonb not null, -- Liste des participants sous forme de tableau JSON
+    admin_id uuid null references auth.users(id) on delete set null,
+    created_at timestamp default now()
+);
+```
+
 ### Application
 
 1. Install dependencies
