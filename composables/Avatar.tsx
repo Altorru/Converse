@@ -44,7 +44,7 @@ export const uploadAvatar = async (fileUri: string) => {
       return null;
     }
 
-    console.log("Uploaded avatar path:", uploadData.path);
+    //console.log("Uploaded avatar path:", uploadData.path);
 
     // Update the user's profile with the new avatar URL
     const { error: profileError } = await supabase
@@ -57,7 +57,7 @@ export const uploadAvatar = async (fileUri: string) => {
       return null;
     }
 
-    console.log("Profile updated successfully with new avatar.");
+    //console.log("Profile updated successfully with new avatar.");
     return uploadData;
   } catch (error) {
     console.error("Error processing file:", error);
@@ -67,10 +67,10 @@ export const uploadAvatar = async (fileUri: string) => {
 
 export const getAvatarUrl = async (avatar: string) => {
   try {
-    console.log("Fetched avatar path:", avatar);
+    //console.log("Fetched avatar path:", avatar);
     const avatarUrl = supabase.storage.from("avatars").getPublicUrl(avatar);
 
-    console.log("Avatar URL:", avatarUrl);
+    //console.log("Avatar URL:", avatarUrl);
     return avatarUrl;
   } catch (error) {
     console.error("Error fetching avatar:", error);

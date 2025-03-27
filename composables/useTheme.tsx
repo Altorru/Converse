@@ -1,4 +1,4 @@
-import { useColorScheme, StyleSheet } from "react-native";
+import { useColorScheme, StyleSheet, StatusBarStyle, StatusBar, Appearance } from "react-native";
 
 // Define the color palette
 const colors = {
@@ -53,7 +53,7 @@ export const useThemeStyles = () => {
     container: {
       flex: 1,
       padding: 20,
-      marginTop: 25,
+      marginTop: (StatusBar.currentHeight || 20),
     },
     titleContainer: {
       flexDirection: "row",
@@ -150,6 +150,9 @@ export const useThemeStyles = () => {
     avatar : {
       ...stylesGlobal.avatar,
     },
+    statusBar: {
+      backgroundColor: colors.light.background,
+    },
   });
 
   const stylesDark = StyleSheet.create({
@@ -194,6 +197,9 @@ export const useThemeStyles = () => {
     },
     avatar : {
       ...stylesGlobal.avatar,
+    },
+    statusBar: {
+      backgroundColor: colors.dark.background,
     },
   });
 

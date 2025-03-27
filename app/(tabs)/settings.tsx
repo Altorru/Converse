@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, Image, StyleSheet, Text } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Text,
+  StatusBar,
+} from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useAuth } from "@/composables/Auth";
@@ -10,19 +17,26 @@ import UIButton from "@/components/ui/Button";
 import UILoading from "@/components/ui/Loading";
 import UITextInput from "@/components/ui/TextInput";
 import * as ImagePicker from "expo-image-picker";
-import { uploadAvatar, getAvatarUrl, getCurrentProfileAvatar } from "@/composables/Avatar";
+import {
+  uploadAvatar,
+  getAvatarUrl,
+  getCurrentProfileAvatar,
+} from "@/composables/Avatar";
 
 export default function TabTwoScreen() {
   const { user, signOut, refreshUser } = useAuth();
   const router = useRouter();
   const styles = useThemeStyles();
-  const [firstName, setFirstName] = useState(user?.user_metadata?.first_name || "");
-  const [lastName, setLastName] = useState(user?.user_metadata?.last_name || "");
+  const [firstName, setFirstName] = useState(
+    user?.user_metadata?.first_name || ""
+  );
+  const [lastName, setLastName] = useState(
+    user?.user_metadata?.last_name || ""
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    
     const fetchAvatarUrl = async () => {
       setIsLoading(true);
       setAvatarUrl(await getCurrentProfileAvatar());
@@ -85,15 +99,25 @@ export default function TabTwoScreen() {
 
   return (
     <ThemedView style={styles.container}>
+      <StatusBar
+        animated={true}
+        backgroundColor={styles.statusBar.backgroundColor}
+        barStyle="default"
+      />
       <UILoading visible={isLoading} />
       <View style={styles.titleContainer}>
         <ThemedText style={styles.title}>Paramètres</ThemedText>
       </View>
-      <TouchableOpacity style={styles.avatarContainer} onPress={handleAvatarUpload}>
+      <TouchableOpacity
+        style={styles.avatarContainer}
+        onPress={handleAvatarUpload}
+      >
         {avatarUrl ? (
           <Image source={{ uri: avatarUrl }} style={styles.avatar} />
         ) : (
-          <ThemedText style={styles.avatarPlaceholder}>Ajouter un avatar</ThemedText>
+          <ThemedText style={styles.avatarPlaceholder}>
+            Ajouter un avatar
+          </ThemedText>
         )}
       </TouchableOpacity>
       <UITextInput
