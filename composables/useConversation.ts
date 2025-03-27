@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 import { useAuth } from "./Auth";
+import { getAvatarUrl } from "./Avatar"
 
 export type Conversation = {
   id: string;
   label: string;
+  avatar_url?: string | null;
   participants: string[];
   admin_id?: string | null;
   created_at: string;
@@ -42,14 +44,17 @@ export const useConversations = () => {
 
           const { data: profile, error: profileError } = await supabase
             .from("profiles")
-            .select("first_name, last_name")
+            .select("first_name, last_name, avatar")
             .eq("id", otherUserId)
             .single();
+
+          const avatarUrl = await getAvatarUrl(profile?.avatar);
 
           if (!profileError && profile) {
             return {
               ...conversation,
               label: `${profile.first_name} ${profile.last_name}`,
+              avatar_url: avatarUrl?.data?.signedUrl,
             };
           }
         }

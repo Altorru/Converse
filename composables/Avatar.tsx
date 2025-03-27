@@ -68,7 +68,7 @@ export const uploadAvatar = async (fileUri: string) => {
 export const getAvatarUrl = async (avatar: string) => {
   try {
     //console.log("Fetched avatar path:", avatar);
-    const avatarUrl = supabase.storage.from("avatars").getPublicUrl(avatar);
+    const avatarUrl = supabase.storage.from("avatars").createSignedUrl(avatar, 60);
 
     //console.log("Avatar URL:", avatarUrl);
     return avatarUrl;

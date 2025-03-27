@@ -20,7 +20,7 @@ const UIConversation: React.FC = () => {
             label={item.label}
             lastMessage="Dernier message..." // À remplacer par un vrai dernier message
             isDM={item.participants.length === 2}
-            avatarUrl="https://w7.pngwing.com/pngs/566/608/png-transparent-iphone-7-imessage-messages-text-messaging-apple-grass-fruit-nut-mobile-phones-thumbnail.png"
+            avatarUrl={item.avatar_url ?? undefined}
           />
         )}
       />
