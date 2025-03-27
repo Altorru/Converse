@@ -21,6 +21,10 @@ const UIConversation: React.FC = () => {
             lastMessage="Dernier message..." // À remplacer par un vrai dernier message
             isDM={item.participants.length === 2}
             avatarUrl={item.avatar_url ?? undefined}
+            onPress={() => {
+              // Navigation vers la conversation
+              console.log("Naviguer vers la conversation:", item.id);
+            }}
           />
         )}
       />

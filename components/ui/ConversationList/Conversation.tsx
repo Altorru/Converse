@@ -1,13 +1,13 @@
 import React from "react";
-import { Text, ViewStyle, TouchableOpacity, Image } from "react-native";
+import { Text, View, TouchableOpacity, Image } from "react-native";
 import { useThemeStyles } from "@/composables/useTheme";
-import { View } from "react-native";
 
 interface UIConversationProps {
   lastMessage: string;
   label: string;
   isDM?: boolean;
   avatarUrl?: string;
+  onPress?: () => void;
 }
 
 const UIConversation: React.FC<UIConversationProps> = ({
@@ -15,17 +15,19 @@ const UIConversation: React.FC<UIConversationProps> = ({
   label,
   isDM = true,
   avatarUrl,
+  onPress,
 }) => {
   const styles = useThemeStyles();
+
   return (
-    <View style={styles.conversationContainer}>
-      <TouchableOpacity style={styles.avatarConversation}>
+    <TouchableOpacity style={styles.conversationContainer} onPress={onPress}>
+      <View style={styles.avatarConversation}>
         {avatarUrl ? (
           <Image source={{ uri: avatarUrl }} style={styles.avatar} />
         ) : (
           <Text style={styles.avatarPlaceholder}>Non dispo</Text>
         )}
-      </TouchableOpacity>
+      </View>
       <View>
         <Text style={styles.conversationContainerLabel}>{label}</Text>
         <Text style={styles.conversationContainerText}>{lastMessage}</Text>
@@ -33,7 +35,8 @@ const UIConversation: React.FC<UIConversationProps> = ({
       <Text style={styles.conversationContainerText}>
         {isDM ? "MP" : "Groupe"}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 };
+
 export default UIConversation;
