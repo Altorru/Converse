@@ -1,14 +1,16 @@
 import React from "react";
-import { View, ActivityIndicator, FlatList } from "react-native";
+import { View, FlatList } from "react-native";
 import Conversation from "@/components/ui/ConversationList/Conversation";
 import { useConversations } from "@/composables/useConversation";
 import Loading from "@/components/ui/Loading";
+import RoundedCircleButton from "./addConversation";
 
 const UIConversation: React.FC = () => {
   const { conversations, loading } = useConversations();
-  
+
   return (
-    <View>
+    <View style={{ flex: 1, padding: 10, width: "100%", height: "100%" }}>
+      {/* Liste des conversations */}
       <Loading visible={loading} />
       <FlatList
         data={conversations}
@@ -20,12 +22,25 @@ const UIConversation: React.FC = () => {
             isDM={item.participants.length === 2}
             avatarUrl={item.avatar_url ?? undefined}
             onPress={() => {
-              // Navigation vers la conversation
               console.log("Naviguer vers la conversation:", item.id);
             }}
           />
         )}
       />
+
+      {/* Bouton d'ajout de conversation */}
+      <View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          right: 0,
+        }}
+      >
+        <RoundedCircleButton
+          onClick={() => console.log("Ajouter une conversation")}
+          size={50} // Ajuste la taille selon ton design
+        />
+      </View>
     </View>
   );
 };
