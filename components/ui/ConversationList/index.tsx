@@ -3,8 +3,10 @@ import { View, FlatList, Alert, Text } from "react-native";
 import Conversation from "@/components/ui/ConversationList/Conversation";
 import { useConversations } from "@/composables/useConversation";
 import Loading from "@/components/ui/Loading";
+import { useRouter } from "expo-router";
 
 const UIConversation: React.FC = () => {
+  const router = useRouter();
   const { conversations, loading, deleteConversation } = useConversations();
   
     // 🗑️ Handle long press to delete conversation
@@ -25,6 +27,10 @@ const UIConversation: React.FC = () => {
       );
     };
 
+  const handlePress = (id: string, label: string) => {
+    router.push({ pathname: "/conversationScreen", params: { id, label } });
+  };
+
   return (
     <View style={{ flex: 1, padding: 10, width: "100%", height: "100%" }}>
       {/* Loading Indicator */}
@@ -40,9 +46,7 @@ const UIConversation: React.FC = () => {
             lastMessage="Dernier message..." // Replace with real last message
             isDM={item.participants.length === 2}
             avatarUrl={item.avatar_url ?? undefined}
-            onPress={() => {
-              console.log("Naviguer vers la conversation:", item.id);
-            }}
+            onPress={() => handlePress(item.id, item.label)}
             onLongPress={() => handleLongPress(item.id)}
           />
         )}
