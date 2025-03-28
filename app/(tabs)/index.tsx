@@ -16,8 +16,8 @@ export default function HomeScreen() {
   const [isCreatingConversation, setIsCreatingConversation] = useState(false);
 
   return (
-    <ThemedView style={styles.container}>
-      <View style={styles.titleContainer}>
+    <ThemedView style={[styles.container, { padding: 0 }]}>
+      <View style={[styles.titleContainer, { margin: 20 }]}>
         <ThemedText style={styles.title}>
           Bienvenue {user ? user.user_metadata.first_name : "Invité"} 🎉
         </ThemedText>
