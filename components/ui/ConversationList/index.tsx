@@ -6,9 +6,6 @@ import Loading from "@/components/ui/Loading";
 
 const UIConversation: React.FC = () => {
   const { conversations, loading, deleteConversation } = useConversations();
-
-  // 🧠 Compute conversations when the state changes
-  const computedConversations = useMemo(() => [...conversations], [conversations]);
   
     // 🗑️ Handle long press to delete conversation
     const handleLongPress = async (id: string) => {
