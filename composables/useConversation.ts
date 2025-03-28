@@ -78,7 +78,7 @@ export const useConversations = () => {
   };
 
   // ➕ Create a new conversation
-  const createConversation = async (label: string, participants: string[]) => {
+  const createConversation = async (label: string | null, participants: string[]) => {
     setLoading(true);
     const isGroup = participants.length > 2;
 

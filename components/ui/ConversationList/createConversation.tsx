@@ -53,8 +53,8 @@ const CreateConversation: React.FC<{ onCancel?: () => void }> = ({
     ) as string[];
     const isGroup = participants.length > 2;
 
-    await createConversation(isGroup ? label : "DM", participants);
-    Alert.alert("Success", "Conversation created!");
+    await createConversation(isGroup ? label : null, participants);
+    Alert.alert("Succès", "Conversation créée avec succès");
     handleCancel(); // Reset fields after creation
   };
 
