@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 import { useAuth } from "./Auth";
-import { getAvatarUrl } from "./Avatar"
+import { getAvatarUrl } from "./Avatar";
 
 export type Conversation = {
   id: string;
@@ -15,9 +15,21 @@ export type Conversation = {
 export const useConversations = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [users, setUsers] = useState<any[]>([]); // State to store users
   const { user } = useAuth(); // Récupérer l'utilisateur connecté
 
-  // 🔄 Récupérer les conversations où l'utilisateur est participant
+  // 🔄 Fetch users
+  const fetchUsers = async () => {
+    const { data, error } = await supabase.from("profiles").select("*");
+
+    if (error) {
+      console.error("Error fetching users:", error);
+    } else {
+      setUsers(data || []);
+    }
+  };
+
+  // 🔄 Fetch conversations
   const fetchConversations = async () => {
     if (!user) return;
     setLoading(true);
@@ -33,7 +45,6 @@ export const useConversations = () => {
       return;
     }
 
-    // 🔹 Mise à jour du label pour les conversations DM (2 participants)
     const updatedConversations = await Promise.all(
       data.map(async (conversation) => {
         if (conversation.participants.length === 2) {
@@ -66,7 +77,7 @@ export const useConversations = () => {
     setLoading(false);
   };
 
-  // ➕ Créer une nouvelle conversation
+  // ➕ Create a new conversation
   const createConversation = async (label: string, participants: string[]) => {
     setLoading(true);
     const isGroup = participants.length > 2;
@@ -88,7 +99,7 @@ export const useConversations = () => {
     setLoading(false);
   };
 
-  // ✏️ Modifier une conversation (ex: changer le label ou les participants)
+  // ✏️ Update a conversation
   const updateConversation = async (
     id: string,
     updates: Partial<Conversation>
@@ -113,7 +124,7 @@ export const useConversations = () => {
     setLoading(false);
   };
 
-  // ❌ Supprimer une conversation
+  // ❌ Delete a conversation
   const deleteConversation = async (id: string) => {
     setLoading(true);
 
@@ -131,13 +142,19 @@ export const useConversations = () => {
     setLoading(false);
   };
 
-  // Charger les conversations au montage
+  // 🔄 Fetch users after deleting a conversation
+  useEffect(() => {
+    fetchUsers();
+  }, [conversations]);
+
+  // Fetch conversations on mount
   useEffect(() => {
     fetchConversations();
   }, [user]);
 
   return {
     conversations,
+    users, // Expose users state
     loading,
     fetchConversations,
     createConversation,
