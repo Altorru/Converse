@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { View, FlatList, Alert, Text } from "react-native";
+import React, { useMemo, useState } from "react";
+import { View, FlatList, Alert } from "react-native";
 import Conversation from "@/components/ui/ConversationList/Conversation";
 import { useConversations } from "@/composables/useConversation";
 import Loading from "@/components/ui/Loading";
@@ -7,28 +7,34 @@ import { useRouter } from "expo-router";
 
 const UIConversation: React.FC = () => {
   const router = useRouter();
-  const { conversations, loading, deleteConversation } = useConversations();
-  
-    // 🗑️ Handle long press to delete conversation
-    const handleLongPress = async (id: string) => {
-      Alert.alert(
-        "Supprimer la conversation",
-        "Êtes-vous sûr de vouloir supprimer cette conversation ?",
-        [
-          { text: "Annuler", style: "cancel" },
-          {
-            text: "Supprimer",
-            style: "destructive",
-            onPress: async () => {
-              await deleteConversation(id);
-            },
+  const { conversations, loading, fetchConversations, deleteConversation } = useConversations();
+  const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
+
+  // 🗑️ Handle long press to delete conversation
+  const handleLongPress = async (id: string) => {
+    Alert.alert(
+      "Supprimer la conversation",
+      "Êtes-vous sûr de vouloir supprimer cette conversation ?",
+      [
+        { text: "Annuler", style: "cancel" },
+        {
+          text: "Supprimer",
+          style: "destructive",
+          onPress: async () => {
+            await deleteConversation(id);
           },
-        ]
-      );
-    };
+        },
+      ]
+    );
+  };
 
   const handlePress = (id: string, label: string) => {
     router.push({ pathname: "/conversationScreen", params: { id, label } });
+  };
+
+  // Handle pull-to-refresh
+  const handleRefresh = async () => {
+    await fetchConversations(); // Fetch the latest conversations
   };
 
   return (
@@ -50,6 +56,8 @@ const UIConversation: React.FC = () => {
             onLongPress={() => handleLongPress(item.id)}
           />
         )}
+        refreshing={refreshing} // Show pull-to-refresh indicator
+        onRefresh={handleRefresh} // Trigger refresh when pulled
       />
     </View>
   );
