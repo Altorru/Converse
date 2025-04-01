@@ -109,7 +109,8 @@ const ConversationScreen: React.FC = () => {
           <View
             style={{
               flexDirection: "column",
-              alignItems: user && item.sender_id === user.id ? "flex-end" : "flex-start", // Align right for "my" messages, left for others
+              alignItems:
+                user && item.sender_id === user.id ? "flex-end" : "flex-start", // Align right for "my" messages, left for others
               marginBottom: 10,
             }}
           >
@@ -120,15 +121,17 @@ const ConversationScreen: React.FC = () => {
                 backgroundColor:
                   user && item.sender_id === user.id ? "#d1e7ff" : "#f1f1f1", // Different background for "my" messages
                 borderRadius: 10,
-                borderTopRightRadius: user && item.sender_id === user.id ? 0 : 10, // Adjust border radius for "my" messages
-                borderTopLeftRadius: user && item.sender_id === user.id ? 10 : 0,
+                borderTopRightRadius:
+                  user && item.sender_id === user.id ? 0 : 10, // Adjust border radius for "my" messages
+                borderTopLeftRadius:
+                  user && item.sender_id === user.id ? 10 : 0,
               }}
             >
               {/* Show sender's label only for messages from other participants */}
               {item.sender_id !== user?.id && (
                 <Text style={{ fontWeight: "bold" }}>
-                  {participants.find((p) => p.id === item.sender_id)?.first_name ??
-                    "Inconnu"}
+                  {participants.find((p) => p.id === item.sender_id)
+                    ?.first_name ?? "Inconnu"}
                 </Text>
               )}
               <Text>{item.text}</Text>
@@ -137,17 +140,18 @@ const ConversationScreen: React.FC = () => {
               style={{
                 fontSize: 10,
                 color: "gray",
-                textAlign: user && item.sender_id === user.id ? "right" : "left", // Align timestamp with the message
+                textAlign:
+                  user && item.sender_id === user.id ? "right" : "left", // Align timestamp with the message
                 marginTop: 5,
               }}
             >
-                {new Date(
+              {new Date(
                 new Date(item.created_at).getTime() -
                   new Date().getTimezoneOffset() * 60000
-                ).toLocaleString("fr-FR", {
+              ).toLocaleString("fr-FR", {
                 hour: "2-digit",
                 minute: "2-digit",
-                })}
+              })}
             </Text>
           </View>
         )}

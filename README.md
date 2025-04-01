@@ -22,6 +22,48 @@ create table conversations (
 );
 ```
 
+3. Messages table
+
+```SQL
+CREATE TABLE messages (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  conversation_id uuid REFERENCES conversations(id) ON DELETE CASCADE,
+  sender_id uuid NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  text text NOT NULL,
+  created_at timestamp DEFAULT now()
+);
+```
+
+```SQL
+CREATE INDEX idx_messages_conversation_id ON messages(conversation_id);
+```
+
+```SQL
+CREATE POLICY "Allow users to read messages in their conversations"
+ON messages
+FOR SELECT
+USING (
+  EXISTS (
+    SELECT 1
+    FROM conversations
+    WHERE conversations.id = messages.conversation_id
+    AND auth.uid() = ANY(conversations.participants)
+  )
+);
+
+CREATE POLICY "Allow users to send messages in their conversations"
+ON messages
+FOR INSERT
+WITH CHECK (
+  EXISTS (
+    SELECT 1
+    FROM conversations
+    WHERE conversations.id = messages.conversation_id
+    AND auth.uid() = ANY(conversations.participants)
+  )
+);
+```
+
 ### Application
 
 1. Install dependencies

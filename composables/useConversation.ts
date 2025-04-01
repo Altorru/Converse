@@ -164,7 +164,7 @@ export const useConversations = () => {
     // Fetch participant details from the profiles table
     const { data: participants, error: participantsError } = await supabase
       .from("profiles")
-      .select("id, first_name, last_name")
+      .select("id, first_name, last_name, avatar")
       .in("id", conversation.participants);
 
     //console.log("Participants:", participants);
@@ -180,6 +180,7 @@ export const useConversations = () => {
       id: participant.id,
       first_name: participant.first_name,
       last_name: participant.last_name,
+      avatar: participant.avatar,
       is_admin: conversation.admin_id ? participant.id === conversation.admin_id : false, // Check if the participant is the admin
     }));
 
