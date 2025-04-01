@@ -16,7 +16,7 @@ export const useConversations = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [users, setUsers] = useState<any[]>([]); // State to store users
-  const { user } = useAuth(); // Récupérer l'utilisateur connecté
+  const { user } = useAuth(); // Get the authenticated user
 
   // 🔄 Fetch users
   const fetchUsers = async () => {
@@ -142,6 +142,51 @@ export const useConversations = () => {
     setLoading(false);
   };
 
+  // 🔄 Fetch participants of a conversation
+  const fetchParticipants = async (conversationId: string) => {
+    setLoading(true);
+
+    // Fetch the conversation to get participants and admin_id
+    const { data: conversation, error: conversationError } = await supabase
+      .from("conversations")
+      .select("participants, admin_id")
+      .eq("id", conversationId)
+      .single();
+
+    //console.log("Conversation:", conversation);
+
+    if (conversationError) {
+      console.error("Error fetching conversation:", conversationError);
+      setLoading(false);
+      return null;
+    }
+
+    // Fetch participant details from the profiles table
+    const { data: participants, error: participantsError } = await supabase
+      .from("profiles")
+      .select("id, first_name, last_name")
+      .in("id", conversation.participants);
+
+    //console.log("Participants:", participants);
+
+    if (participantsError) {
+      console.error("Error fetching participants:", participantsError);
+      setLoading(false);
+      return null;
+    }
+
+    // Map participants to include admin status
+    const participantsWithAdminStatus = participants.map((participant) => ({
+      id: participant.id,
+      first_name: participant.first_name,
+      last_name: participant.last_name,
+      is_admin: conversation.admin_id ? participant.id === conversation.admin_id : false, // Check if the participant is the admin
+    }));
+
+    setLoading(false);
+    return participantsWithAdminStatus;
+  };
+
   // 🔄 Fetch users after deleting a conversation
   useEffect(() => {
     fetchUsers();
@@ -160,5 +205,6 @@ export const useConversations = () => {
     createConversation,
     updateConversation,
     deleteConversation,
+    fetchParticipants, // Expose the fetchParticipants function
   };
 };
