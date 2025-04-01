@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  FlatList,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import { View, Text, TextInput, Button, TouchableOpacity } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useThemeStyles } from "@/composables/useTheme";
 import { supabase } from "@/composables/supabaseClient";
 import { useAuth } from "@/composables/Auth";
 import { useConversations } from "@/composables/useConversation";
+import MessagesList from "@/components/ui/Messages";
 
 const ConversationScreen: React.FC = () => {
   const { id: conversationId, label } = useLocalSearchParams<{
@@ -102,83 +95,10 @@ const ConversationScreen: React.FC = () => {
         <Text style={styles.title}>{label}</Text>
       </View>
 
-      {/* Messages List */}
-      <FlatList
-        data={messages}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          const isMyMessage = user && item.sender_id === user.id;
-          const sender = participants.find((p) => p.id === item.sender_id);
-
-          return (
-            <View
-              style={{
-                flexDirection: isMyMessage ? "row-reverse" : "row", // Align avatar and message
-                alignItems: "flex-end",
-                marginBottom: 10,
-              }}
-            >
-              {/* Avatar */}
-              {!isMyMessage && (
-                <View
-                  style={{
-                    alignItems: "center", // Center the avatar and timestamp
-                    marginRight: 10,
-                  }}
-                >
-                  <Image
-                    source={
-                      sender?.avatar
-                        ? { uri: sender.avatar }
-                        : undefined // Blank image if no avatar is provided
-                    }
-                    style={{
-                      width: 25,
-                      height: 25,
-                      borderRadius: 20,
-                      backgroundColor: "#ccc", // Placeholder background
-                    }}
-                  />
-                </View>
-              )}
-
-              {/* Message Bubble */}
-              <View
-                style={{
-                  maxWidth: "75%", // Limit the bubble width to 3/4 of the screen
-                  padding: 10,
-                  backgroundColor: isMyMessage ? "#d1e7ff" : "#f1f1f1", // Different background for "my" messages
-                  borderRadius: 20,
-                  borderTopRightRadius: isMyMessage ? 0 : 20, // Adjust border radius for "my" messages
-                  borderTopLeftRadius: isMyMessage ? 20 : 0,
-                  position: "relative", // Allow positioning inside the bubble
-                }}
-              >
-                <Text>{item.text}</Text>
-
-                {/* Timestamp Inside the Bubble */}
-                {/* <Text
-                  style={{
-                    fontSize: 8,
-                    color: "gray",
-                    position: "absolute",
-                    bottom: 0,
-                    right: isMyMessage ? 4 : "auto", // Align to bottom-right for "my" messages
-                    left: isMyMessage ? "auto" : 4, // Align to bottom-left for others
-                  }}
-                >
-                  {new Date(
-                    new Date(item.created_at).getTime() -
-                      new Date().getTimezoneOffset() * 60000
-                  ).toLocaleString("fr-FR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </Text> */}
-              </View>
-            </View>
-          );
-        }}
+      <MessagesList
+        messages={messages}
+        user={user}
+        participants={participants}
       />
 
       {/* Message Input */}
