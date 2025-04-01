@@ -6,6 +6,7 @@ import {
   Button,
   FlatList,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useThemeStyles } from "@/composables/useTheme";
@@ -105,56 +106,79 @@ const ConversationScreen: React.FC = () => {
       <FlatList
         data={messages}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View
-            style={{
-              flexDirection: "column",
-              alignItems:
-                user && item.sender_id === user.id ? "flex-end" : "flex-start", // Align right for "my" messages, left for others
-              marginBottom: 10,
-            }}
-          >
+        renderItem={({ item }) => {
+          const isMyMessage = user && item.sender_id === user.id;
+          const sender = participants.find((p) => p.id === item.sender_id);
+
+          return (
             <View
               style={{
-                maxWidth: "75%", // Limit the bubble width to 3/4 of the screen
-                padding: 10,
-                backgroundColor:
-                  user && item.sender_id === user.id ? "#d1e7ff" : "#f1f1f1", // Different background for "my" messages
-                borderRadius: 10,
-                borderTopRightRadius:
-                  user && item.sender_id === user.id ? 0 : 10, // Adjust border radius for "my" messages
-                borderTopLeftRadius:
-                  user && item.sender_id === user.id ? 10 : 0,
+                flexDirection: isMyMessage ? "row-reverse" : "row", // Align avatar and message
+                alignItems: "flex-end",
+                marginBottom: 10,
               }}
             >
-              {/* Show sender's label only for messages from other participants */}
-              {item.sender_id !== user?.id && (
-                <Text style={{ fontWeight: "bold" }}>
-                  {participants.find((p) => p.id === item.sender_id)
-                    ?.first_name ?? "Inconnu"}
-                </Text>
+              {/* Avatar */}
+              {!isMyMessage && (
+                <View
+                  style={{
+                    alignItems: "center", // Center the avatar and timestamp
+                    marginRight: 10,
+                  }}
+                >
+                  <Image
+                    source={
+                      sender?.avatar
+                        ? { uri: sender.avatar }
+                        : undefined // Blank image if no avatar is provided
+                    }
+                    style={{
+                      width: 25,
+                      height: 25,
+                      borderRadius: 20,
+                      backgroundColor: "#ccc", // Placeholder background
+                    }}
+                  />
+                </View>
               )}
-              <Text>{item.text}</Text>
+
+              {/* Message Bubble */}
+              <View
+                style={{
+                  maxWidth: "75%", // Limit the bubble width to 3/4 of the screen
+                  padding: 10,
+                  backgroundColor: isMyMessage ? "#d1e7ff" : "#f1f1f1", // Different background for "my" messages
+                  borderRadius: 20,
+                  borderTopRightRadius: isMyMessage ? 0 : 20, // Adjust border radius for "my" messages
+                  borderTopLeftRadius: isMyMessage ? 20 : 0,
+                  position: "relative", // Allow positioning inside the bubble
+                }}
+              >
+                <Text>{item.text}</Text>
+
+                {/* Timestamp Inside the Bubble */}
+                {/* <Text
+                  style={{
+                    fontSize: 8,
+                    color: "gray",
+                    position: "absolute",
+                    bottom: 0,
+                    right: isMyMessage ? 4 : "auto", // Align to bottom-right for "my" messages
+                    left: isMyMessage ? "auto" : 4, // Align to bottom-left for others
+                  }}
+                >
+                  {new Date(
+                    new Date(item.created_at).getTime() -
+                      new Date().getTimezoneOffset() * 60000
+                  ).toLocaleString("fr-FR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </Text> */}
+              </View>
             </View>
-            <Text
-              style={{
-                fontSize: 10,
-                color: "gray",
-                textAlign:
-                  user && item.sender_id === user.id ? "right" : "left", // Align timestamp with the message
-                marginTop: 5,
-              }}
-            >
-              {new Date(
-                new Date(item.created_at).getTime() -
-                  new Date().getTimezoneOffset() * 60000
-              ).toLocaleString("fr-FR", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </Text>
-          </View>
-        )}
+          );
+        }}
       />
 
       {/* Message Input */}

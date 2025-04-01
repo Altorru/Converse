@@ -176,13 +176,15 @@ export const useConversations = () => {
     }
 
     // Map participants to include admin status
-    const participantsWithAdminStatus = participants.map((participant) => ({
-      id: participant.id,
-      first_name: participant.first_name,
-      last_name: participant.last_name,
-      avatar: participant.avatar,
-      is_admin: conversation.admin_id ? participant.id === conversation.admin_id : false, // Check if the participant is the admin
-    }));
+    const participantsWithAdminStatus = await Promise.all(
+      participants.map(async (participant) => ({
+        id: participant.id,
+        first_name: participant.first_name,
+        last_name: participant.last_name,
+        avatar: (await getAvatarUrl(participant.avatar))?.data?.signedUrl,
+        is_admin: conversation.admin_id ? participant.id === conversation.admin_id : false, // Check if the participant is the admin
+      }))
+    );
 
     setLoading(false);
     return participantsWithAdminStatus;
