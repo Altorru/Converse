@@ -34,12 +34,12 @@ const ConversationScreen: React.FC = () => {
   // Fetch participants for the conversation
   const fetchConversationParticipants = async () => {
     setParticipants((await fetchParticipants(conversationId)) || []);
-    console.log(
-      "Participants for conversation",
-      conversationId,
-      "fetched successfully",
-      participants
-    );
+    // console.log(
+    //   "Participants for conversation",
+    //   conversationId,
+    //   "fetched successfully",
+    //   participants
+    // );
   };
 
   // Fetch messages for the conversation
@@ -106,36 +106,50 @@ const ConversationScreen: React.FC = () => {
         data={messages}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <>
-            <Text
+          <View
+            style={{
+              flexDirection: "column",
+              alignItems: user && item.sender_id === user.id ? "flex-end" : "flex-start", // Align right for "my" messages, left for others
+              marginBottom: 10,
+            }}
+          >
+            <View
               style={{
-                padding: 5,
+                maxWidth: "75%", // Limit the bubble width to 3/4 of the screen
+                padding: 10,
                 backgroundColor:
-                  user && item.sender_id === user.id ? "#d1e7ff" : "#f1f1f1",
-                marginBottom: 5,
-                borderRadius: 5,
+                  user && item.sender_id === user.id ? "#d1e7ff" : "#f1f1f1", // Different background for "my" messages
+                borderRadius: 10,
+                borderTopRightRadius: user && item.sender_id === user.id ? 0 : 10, // Adjust border radius for "my" messages
+                borderTopLeftRadius: user && item.sender_id === user.id ? 10 : 0,
               }}
             >
-              {item.sender_id === user?.id
-                ? "Moi"
-                : participants.find((p) => p.id === item.sender_id)
-                    ?.first_name ?? "Inconnu"}
-              : {item.text}
-            </Text>
+              {/* Show sender's label only for messages from other participants */}
+              {item.sender_id !== user?.id && (
+                <Text style={{ fontWeight: "bold" }}>
+                  {participants.find((p) => p.id === item.sender_id)?.first_name ??
+                    "Inconnu"}
+                </Text>
+              )}
+              <Text>{item.text}</Text>
+            </View>
             <Text
               style={{
                 fontSize: 10,
                 color: "gray",
-                textAlign: "right",
-                marginBottom: 5,
+                textAlign: user && item.sender_id === user.id ? "right" : "left", // Align timestamp with the message
+                marginTop: 5,
               }}
             >
-              {new Date(item.created_at).toLocaleString("fr-FR", {
+                {new Date(
+                new Date(item.created_at).getTime() -
+                  new Date().getTimezoneOffset() * 60000
+                ).toLocaleString("fr-FR", {
                 hour: "2-digit",
                 minute: "2-digit",
-              })}
+                })}
             </Text>
-          </>
+          </View>
         )}
       />
 
