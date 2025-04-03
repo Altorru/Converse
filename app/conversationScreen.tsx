@@ -21,19 +21,13 @@ const ConversationScreen: React.FC = () => {
   const [newMessage, setNewMessage] = useState("");
   const { user } = useAuth();
 
-  const { fetchParticipants } = useConversations();
+  const { fetchParticipants, subscribeToMessages } = useConversations();
 
   const [participants, setParticipants] = useState<any[]>([]);
 
   // Fetch participants for the conversation
   const fetchConversationParticipants = async () => {
     setParticipants((await fetchParticipants(conversationId)) || []);
-    // console.log(
-    //   "Participants for conversation",
-    //   conversationId,
-    //   "fetched successfully",
-    //   participants
-    // );
   };
 
   // Fetch messages for the conversation
@@ -76,9 +70,18 @@ const ConversationScreen: React.FC = () => {
       await fetchMessages();
       await fetchConversationParticipants();
     };
-
     fetchData();
-  }, [conversationId]);
+
+    const unsubscribe = subscribeToMessages(conversationId, (newMessage) => {
+      setMessages((prev) => [...prev, newMessage]); // Add new message to the list
+    });
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe(); // Cleanup subscription
+      }
+    };
+  }, [conversationId]); // Add conversationId as a dependency
 
   return (
     <View style={[styles.container, { flex: 1 }]}>
