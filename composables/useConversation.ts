@@ -190,6 +190,36 @@ export const useConversations = () => {
     return participantsWithAdminStatus;
   };
 
+  // 🔄 Subscribe to real-time messages
+  const subscribeToMessages = (conversationId: string, onMessageReceived: (message: any) => void) => {
+    const channel = supabase
+      .channel(`conversation:${conversationId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
+          schema: 'public',
+          table: 'messages',
+          filter: `conversation_id=eq.${conversationId}`, // Filter messages by conversation ID
+        },
+        (payload) => {
+          //console.log('Real-time message received:', payload);
+          if (payload.eventType === 'INSERT') {
+            onMessageReceived(payload.new); // Handle new messages
+          } else if (payload.eventType === 'UPDATE') {
+            //console.log('Message updated:', payload.new);
+          } else if (payload.eventType === 'DELETE') {
+            //console.log('Message deleted:', payload.old);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel); // Clean up the subscription
+    };
+  };
+
   // 🔄 Fetch users after deleting a conversation
   useEffect(() => {
     fetchUsers();
@@ -209,5 +239,6 @@ export const useConversations = () => {
     updateConversation,
     deleteConversation,
     fetchParticipants, // Expose the fetchParticipants function
+    subscribeToMessages, // Expose the subscribeToMessages function
   };
 };
