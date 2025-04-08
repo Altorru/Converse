@@ -6,6 +6,8 @@ interface MessageBubbleProps {
   createdAt: string;
   isMyMessage: boolean;
   avatarUrl?: string;
+  isAdjacentAbove?: boolean; // Whether the bubble is adjacent to the one above
+  isAdjacentBelow?: boolean; // Whether the bubble is adjacent to the one below
 }
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({
@@ -13,17 +15,19 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   createdAt,
   isMyMessage,
   avatarUrl,
+  isAdjacentAbove,
+  isAdjacentBelow,
 }) => {
   return (
     <View
       style={{
         flexDirection: isMyMessage ? "row-reverse" : "row", // Align avatar and message
         alignItems: "flex-end",
-        marginBottom: 10,
+        marginBottom: isAdjacentBelow ? 2 : 10, // Reduce margin if adjacent below
       }}
     >
       {/* Avatar */}
-      {!isMyMessage && (
+      {!isMyMessage && !isAdjacentBelow && (
         <View style={styles.avatarContainer}>
           <Image
             source={
@@ -42,15 +46,34 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
           styles.bubble,
           {
             backgroundColor: isMyMessage ? "#d1e7ff" : "#f1f1f1", // Different background for "my" messages
-            borderTopRightRadius: isMyMessage ? 0 : 20, // Adjust border radius for "my" messages
-            borderTopLeftRadius: isMyMessage ? 20 : 0,
+            borderTopRightRadius: isMyMessage
+              ? isAdjacentAbove
+                ? 5
+                : 20
+              : 20, // Adjust border radius for "my" messages
+            borderTopLeftRadius: isMyMessage
+              ? 20
+              : isAdjacentAbove
+              ? 5
+              : 20,
+            borderBottomRightRadius: isMyMessage
+              ? isAdjacentBelow
+                ? 5
+                : 20
+              : 20,
+            borderBottomLeftRadius: isMyMessage
+              ? 20
+              : isAdjacentBelow
+              ? 5
+              : 20,
+            marginLeft: !isMyMessage && isAdjacentBelow ? 35 : 0, // Add margin to align with avatar
           },
         ]}
       >
         <Text>{text}</Text>
 
         {/* Timestamp Inside the Bubble */}
-        {/* <Text
+        {/*<Text
           style={[
             styles.timestamp,
             {
@@ -65,7 +88,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
             hour: "2-digit",
             minute: "2-digit",
           })}
-        </Text> */}
+        </Text>*/}
       </View>
     </View>
   );

@@ -30,12 +30,23 @@ const MessagesList: React.FC<{
         const isMyMessage = user && item.sender_id === user.id;
         const sender = participants.find((p) => p.id === item.sender_id);
 
+        const currentIndex = messages.findIndex((msg) => msg.id === item.id);
+        const previousMessage = messages[currentIndex - 1];
+        const nextMessage = messages[currentIndex + 1];
+
+        const isAdjacentAbove =
+          previousMessage && previousMessage.sender_id === item.sender_id;
+        const isAdjacentBelow =
+          nextMessage && nextMessage.sender_id === item.sender_id;
+
         return (
           <MessageBubble
             text={item.text}
             createdAt={item.created_at}
             isMyMessage={isMyMessage}
             avatarUrl={sender?.avatar}
+            isAdjacentAbove={isAdjacentAbove}
+            isAdjacentBelow={isAdjacentBelow}
           />
         );
       }}
