@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useThemeStyles } from "@/composables/useTheme";
 import { supabase } from "@/composables/supabaseClient";
@@ -21,6 +28,7 @@ const ConversationScreen: React.FC = () => {
   const [newMessage, setNewMessage] = useState("");
   const [offset, setOffset] = useState(0); // Track the current offset for pagination
   const [isFetchingMore, setIsFetchingMore] = useState(false); // Prevent multiple fetches
+  const [loading, setLoading] = useState(true); // Track whether the initial data is loading
   const { user } = useAuth();
 
   const { fetchParticipants, subscribeToMessages } = useConversations();
@@ -95,8 +103,10 @@ const ConversationScreen: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true); // Start loading
       await fetchMessages(); // Initial fetch
       await fetchConversationParticipants();
+      setLoading(false); // Stop loading
     };
     fetchData();
 
@@ -126,27 +136,34 @@ const ConversationScreen: React.FC = () => {
         <Text style={styles.title}>{label}</Text>
       </View>
 
-      <MessagesList
-        messages={messages}
-        user={user}
-        participants={participants}
-        onFetchMore={fetchMoreMessages} // Pass the fetchMoreMessages function
-      />
+      {/* Loading Indicator */}
+      {loading ? (
+        <ActivityIndicator size="large" color="#007AFF" style={{ flex: 1 }} />
+      ) : (
+        <MessagesList
+          messages={messages}
+          user={user}
+          participants={participants}
+          onFetchMore={fetchMoreMessages} // Pass the fetchMoreMessages function
+        />
+      )}
 
       {/* Message Input */}
-      <View style={{ flexDirection: "row", marginTop: 10 }}>
-        <TextInput
-          style={[
-            styles.TextInput,
-            { flex: 1, borderWidth: 1, padding: 10, borderRadius: 5 },
-          ]}
-          placeholder="Ecrire un message..."
-          placeholderTextColor={"lightgrey"}
-          value={newMessage}
-          onChangeText={setNewMessage}
-        />
-        <Button title="Envoyer" onPress={sendMessage} />
-      </View>
+      {!loading && (
+        <View style={{ flexDirection: "row", marginTop: 10 }}>
+          <TextInput
+            style={[
+              styles.TextInput,
+              { flex: 1, borderWidth: 1, padding: 10, borderRadius: 5 },
+            ]}
+            placeholder="Ecrire un message..."
+            placeholderTextColor={"lightgrey"}
+            value={newMessage}
+            onChangeText={setNewMessage}
+          />
+          <Button title="Envoyer" onPress={sendMessage} />
+        </View>
+      )}
     </View>
   );
 };
