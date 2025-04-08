@@ -1,18 +1,21 @@
 import React, { useEffect, useRef } from "react";
-import { FlatList } from "react-native";
+import { FlatList, NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import MessageBubble from "./Bubble";
 
 const MessagesList: React.FC<{
   messages: any[];
   user: any;
   participants: any[];
-}> = ({ messages, user, participants }) => {
+  onFetchMore: () => void; // Callback to fetch more messages
+}> = ({ messages, user, participants, onFetchMore }) => {
   const flatListRef = useRef<FlatList<any>>(null); // Create a ref for the FlatList
 
   // Scroll to the bottom when the component is first loaded
-  flatListRef.current?.scrollToEnd({
-    animated: false, // No animation on initial load
-  });
+  useEffect(() => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToEnd({ animated: false }); // No animation
+    }
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   // Auto-scroll to the bottom when messages change
   useEffect(() => {
@@ -20,6 +23,15 @@ const MessagesList: React.FC<{
       flatListRef.current.scrollToEnd({ animated: true }); // Smooth animation for new messages
     }
   }, [messages]);
+
+  // Handle scrolling to the top to fetch more messages
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { contentOffset } = event.nativeEvent;
+    if (contentOffset.y <= 0) {
+      // User has scrolled to the top
+      onFetchMore();
+    }
+  };
 
   return (
     <FlatList
@@ -51,7 +63,9 @@ const MessagesList: React.FC<{
         );
       }}
       contentContainerStyle={{ paddingBottom: 10 }} // Add padding at the bottom
-      showsVerticalScrollIndicator={false}
+      showsVerticalScrollIndicator={false} // Hide the vertical scroll indicator
+      onScroll={handleScroll} // Trigger the scroll handler
+      scrollEventThrottle={16} // Throttle scroll events for performance
     />
   );
 };

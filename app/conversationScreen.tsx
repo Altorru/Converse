@@ -19,6 +19,8 @@ const ConversationScreen: React.FC = () => {
     { id: string; sender_id: string; text: string; created_at: string }[]
   >([]);
   const [newMessage, setNewMessage] = useState("");
+  const [offset, setOffset] = useState(0); // Track the current offset for pagination
+  const [isFetchingMore, setIsFetchingMore] = useState(false); // Prevent multiple fetches
   const { user } = useAuth();
 
   const { fetchParticipants, subscribeToMessages } = useConversations();
@@ -31,18 +33,44 @@ const ConversationScreen: React.FC = () => {
   };
 
   // Fetch messages for the conversation
-  const fetchMessages = async () => {
+  const fetchMessages = async (newOffset = 0) => {
+    if (!conversationId) {
+      console.error("Conversation ID is undefined");
+      return;
+    }
+
     const { data, error } = await supabase
       .from("messages")
       .select("*")
       .eq("conversation_id", conversationId)
-      .order("created_at", { ascending: true });
+      .order("created_at", { ascending: false })
+      .range(newOffset, newOffset + 19); // Fetch 20 messages starting from the offset
 
     if (error) {
       console.error("Error fetching messages:", error);
-    } else {
-      setMessages(data || []);
+      return;
     }
+
+    if (data) {
+      if (newOffset === 0) {
+        // Initial fetch
+        setMessages(data.reverse()); // Reverse to maintain chronological order
+      } else {
+        // Append older messages to the top
+        setMessages((prev) => [...data.reverse(), ...prev]);
+      }
+    }
+  };
+
+  // Fetch older messages when scrolling to the top
+  const fetchMoreMessages = async () => {
+    if (isFetchingMore) return; // Prevent multiple fetches
+    setIsFetchingMore(true);
+
+    const newOffset = offset + 20; // Increment the offset by 20
+    await fetchMessages(newOffset);
+    setOffset(newOffset); // Update the offset
+    setIsFetchingMore(false);
   };
 
   // Send a new message
@@ -67,7 +95,7 @@ const ConversationScreen: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetchMessages();
+      await fetchMessages(); // Initial fetch
       await fetchConversationParticipants();
     };
     fetchData();
@@ -102,6 +130,7 @@ const ConversationScreen: React.FC = () => {
         messages={messages}
         user={user}
         participants={participants}
+        onFetchMore={fetchMoreMessages} // Pass the fetchMoreMessages function
       />
 
       {/* Message Input */}
