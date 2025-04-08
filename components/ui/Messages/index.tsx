@@ -40,6 +40,7 @@ const MessagesList: React.FC<{
         );
       }}
       contentContainerStyle={{ paddingBottom: 10 }} // Add padding at the bottom
+      showsVerticalScrollIndicator={false}
     />
   );
 };
