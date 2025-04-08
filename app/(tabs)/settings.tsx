@@ -39,7 +39,8 @@ export default function TabTwoScreen() {
   useEffect(() => {
     const fetchAvatarUrl = async () => {
       setIsLoading(true);
-      setAvatarUrl(await getCurrentProfileAvatar());
+      const url = await getCurrentProfileAvatar();
+      setAvatarUrl(url);
       setIsLoading(false);
     };
 
@@ -58,41 +59,76 @@ export default function TabTwoScreen() {
 
   const handleSave = async () => {
     setIsLoading(true);
-    const { error } = await supabase.auth.updateUser({
-      data: { first_name: firstName, last_name: lastName },
-    });
+    try {
+      const { error: userError } = await supabase.auth.updateUser({
+        data: { first_name: firstName, last_name: lastName },
+      });
 
-    if (error) {
-      alert("Erreur " + error);
-    } else {
-      refreshUser()
-        .then(() => {
-          alert("Succès: Utilisateur modifié avec succès");
-        })
-        .catch((error) => console.error("Error refreshing user:", error));
+      if (userError) {
+        alert("Erreur " + userError.message);
+        return;
+      }
+
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({ first_name: firstName, last_name: lastName })
+        .eq("id", user?.id);
+
+      if (profileError) {
+        alert("Erreur " + profileError.message);
+        return;
+      }
+
+      await refreshUser();
+      alert("Succès: Utilisateur modifié avec succès");
+    } catch (error) {
+      console.error("Error saving user data:", error);
+      alert("Une erreur est survenue lors de la sauvegarde.");
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const handleAvatarUpload = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      setIsLoading(true);
-      const file = result.assets[0];
-      const data = await uploadAvatar(file.uri);
-      if (!data) {
-        alert("Erreur lors du téléchargement de l'avatar.");
-      } else {
-        const result = await getAvatarUrl(data.path); // Fetch the full URL of the uploaded avatar
-        const url = result?.data?.signedUrl || null;
+      // Check if the result contains assets and is not canceled
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        setIsLoading(true);
+        const file = result.assets[0]; // Safely access the first asset
+
+        // Upload the avatar
+        const data = await uploadAvatar(file.uri);
+        if (!data) {
+          alert("Erreur lors du téléchargement de l'avatar.");
+          setIsLoading(false);
+          return;
+        }
+
+        // Fetch the full URL of the uploaded avatar
+        const avatarResult = await getAvatarUrl(data.path);
+        const url = avatarResult?.data?.signedUrl || null;
+
+        if (!url) {
+          alert("Erreur lors de la récupération de l'URL de l'avatar.");
+          setIsLoading(false);
+          return;
+        }
+
         setAvatarUrl(url); // Update the avatar URL
-        refreshUser();
+        await refreshUser(); // Refresh user data
+      } else {
+        console.log("Image selection was canceled or no assets found.");
       }
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      alert("Une erreur est survenue lors du téléchargement de l'avatar.");
+    } finally {
       setIsLoading(false);
     }
   };
