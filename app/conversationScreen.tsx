@@ -95,8 +95,8 @@ const ConversationScreen: React.FC = () => {
       if (error) {
         console.error("Error sending message:", error);
       } else {
-        fetchMessages(); // Refresh messages after sending
         setNewMessage(""); // Clear input field
+        fetchMessages(); // Refresh messages after sending
       }
     }
   };
